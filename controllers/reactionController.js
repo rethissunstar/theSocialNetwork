@@ -1,47 +1,49 @@
-const { Post, Comment } = require('../models');
+const { Post, Reaction } = require('../models');
 
 module.exports = {
-  async getComments(req, res) {
+  async getReactions(req, res) {
     try {
-      const comment = await Comment.find();
-      res.json(comment);
+      const reactions = await Reaction.find();
+      res.json(reactions);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // Get a single comment
-  async getSingleComment(req, res) {
-    try {
-      const comment = await Comment.findOne({ _id: req.params.commentId });
 
-      if (!comment) {
-        return res.status(404).json({ message: 'No comment found with that id' });
+  // Get a single reaction
+  async getSingleReaction(req, res) {
+    try {
+      const reaction = await Reaction.findOne({ _id: req.params.reactionId });
+
+      if (!reaction) {
+        return res.status(404).json({ message: 'No reaction found with that id' });
       }
 
-      res.json(comment);
+      res.json(reaction);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // Create a comment
-  async createComment(req, res) {
-    try {
-      const comment = await Comment.create(req.body);
-      const post = await Post.findOneAndUpdate(
-        { _id: req.body.postId },
-        { $push: { comments: comment._id } },
-        { new: true }
-      );
 
+  // Create a reaction
+  async createReaction(req, res) {
+    try {
+      const post = await Post.findOne({ _id: req.body.postId });
+      
       if (!post) {
         return res
           .status(404)
-          .json({ message: 'comment created, but no posts with this ID' });
+          .json({ message: 'Post not found with this ID' });
       }
 
-      res.json({ message: 'comment created' });
+      const reaction = await Reaction.create(req.body);
+      post.reactions.push(reaction._id);
+      await post.save();
+
+      res.json({ message: 'Reaction created' });
     } catch (err) {
       console.error(err);
+      res.status(500).json(err);
     }
   },
 };
