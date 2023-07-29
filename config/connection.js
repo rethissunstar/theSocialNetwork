@@ -1,5 +1,19 @@
-const { connect, connection } = require('mongoose');
+const mongoose = require('mongoose');
 
-connect('mongodb://127.0.0.1:27017/commentExample');
+const uri = 'mongodb://127.0.0.1:27017/socialNetwork';
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
 
-module.exports = connection;
+mongoose.connect(uri, options)
+  .then(() => {
+    console.log('Connected to MongoDB successfully!');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
+
+const db = mongoose.connection;
+
+module.exports = db;

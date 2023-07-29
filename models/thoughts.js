@@ -8,8 +8,9 @@ const thoughtSchema = new Schema(
       required: true,
       maxlength: 280,
     },
-    username: {
-      type: String,
+    user: { 
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     reactions: [
