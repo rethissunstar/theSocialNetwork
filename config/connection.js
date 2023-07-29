@@ -6,6 +6,8 @@ const options = {
   useUnifiedTopology: true,
 };
 
+const db = mongoose.connection;
+
 mongoose.connect(uri, options)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
@@ -14,6 +16,4 @@ mongoose.connect(uri, options)
     console.error('Error connecting to MongoDB:', error.message);
   });
 
-const db = mongoose.connection;
-
-module.exports = db;
+module.exports = { db, uri, options };

@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
-const db = require('../config/connection');
+const { db, uri, options } = require('../config/connection'); // Import the db object and individual properties
+
 const User = require('../models/User');
-const Thought = require('../models/Thoughts');
-const Reaction = require('../models/Reactions');
+const Thought = require('../models/thoughts');
+const Reaction = require('../models/reactions');
 
 const seedData = async () => {
   try {
-    await mongoose.connect(db.uri, db.options);
+    console.log('Database URI:', uri); 
+    await mongoose.connect(uri, options);
 
     // Seed users
     const users = [
