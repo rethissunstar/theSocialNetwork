@@ -28,13 +28,15 @@ module.exports = {
   // Create a thought (comment)
   async createThought(req, res) {
     try {
-      const thought = await Thought.create(req.body);
-      res.json({ message: 'Thought created', thought });
+      console.log("request body:", req.body);
+      const newThought = await Thought.create(req.body);
+      res.json({ message: 'Thought created', thought: newThought });
     } catch (err) {
       console.error(err);
       res.status(500).json(err);
     }
   },
+
 
   // Delete a thought and associated reactions
   async deleteThought(req, res) {
