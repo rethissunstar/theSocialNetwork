@@ -1,14 +1,14 @@
 const router = require('express').Router();
 const {
-  getreactions,
-  getSinglereaction,
-  createreaction,
+  getReactions,
+  getSingleReaction,
+  createReaction,
 } = require('../../controllers/reactionController');
 
 // /api/reactions
-router.route('/').get(getreactions).post(createreaction);
+router.route('/').get(getReactions).post(createReaction);
 
 // /api/reactions/:reactionId
-router.route('/:reactionId').get(getSinglereaction);
+router.route('/:reactionId').get(getSingleReaction);
 
 module.exports = router;

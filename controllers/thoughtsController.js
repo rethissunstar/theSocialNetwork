@@ -1,4 +1,4 @@
-const { Post, Thought, Reaction } = require('../models');
+const { Thought, Reaction } = require('../models');
 
 module.exports = {
   async getThoughts(req, res) {
@@ -9,6 +9,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
   // Get a single thought
   async getSingleThought(req, res) {
     try {
@@ -23,27 +24,18 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
   // Create a thought (comment)
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
-      const post = await Post.findOneAndUpdate(
-        { _id: req.body.postId },
-        { $push: { thoughts: thought._id } },
-        { new: true }
-      );
-
-      if (!post) {
-        return res
-          .status(404)
-          .json({ message: 'Thought created, but no posts with this ID' });
-      }
-
-      res.json({ message: 'Thought created' });
+      res.json({ message: 'Thought created', thought });
     } catch (err) {
       console.error(err);
+      res.status(500).json(err);
     }
   },
+
   // Delete a thought and associated reactions
   async deleteThought(req, res) {
     try {
@@ -53,7 +45,10 @@ module.exports = {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
 
-      res.json({ message: 'Thought deleted!' });
+      // Delete reactions associated with the thought
+      await Reaction.deleteMany({ thought: req.params.thoughtId });
+
+      res.json({ message: 'Thought and associated reactions deleted!' });
     } catch (err) {
       res.status(500).json(err);
     }
