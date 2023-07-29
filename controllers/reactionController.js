@@ -1,4 +1,4 @@
-const { Post, Reaction } = require('../models');
+const { Thought, Reaction } = require('../models');
 
 module.exports = {
   async getReactions(req, res) {
@@ -28,19 +28,16 @@ module.exports = {
   // Create a reaction
   async createReaction(req, res) {
     try {
-      const post = await Post.findOne({ _id: req.body.postId });
-      
-      if (!post) {
-        return res
-          .status(404)
-          .json({ message: 'Post not found with this ID' });
+      const thought = await Thought.findOne({ _id: req.body.thoughtId });
+
+      if (thought) {
+        const reaction = await Reaction.create(req.body);
+        thought.reactions.push(reaction._id);
+        await thought.save();
+        res.json({ message: 'Reaction created' });
+      } else {
+        res.status(404).json({ message: 'Thought not found with this ID' });
       }
-
-      const reaction = await Reaction.create(req.body);
-      post.reactions.push(reaction._id);
-      await post.save();
-
-      res.json({ message: 'Reaction created' });
     } catch (err) {
       console.error(err);
       res.status(500).json(err);
